@@ -1,4 +1,4 @@
-package com.ThreeDrunkenSailors.boatwatch.sensors;
+package com.threedrunkensailors.boatwatch.sensors;
 
 /**
  * Created by marco on 4/29/14.

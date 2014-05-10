@@ -33,7 +33,7 @@ package com.adafruit.lcd.demo;
 
 import java.io.IOException;
 import com.adafruit.lcd.LCD;
-import com.ThreeDrunkenSailors.util.ThreadUtil;
+import com.threedrunkensailors.util.ThreadUtil;
 /**
  * Simply turns off and on the display a few times.
  * 

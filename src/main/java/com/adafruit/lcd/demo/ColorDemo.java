@@ -35,7 +35,7 @@ import java.io.IOException;
 
 import com.adafruit.lcd.LCD;
 import com.adafruit.lcd.LCD.Color;
-import com.ThreeDrunkenSailors.util.ThreadUtil;
+import com.threedrunkensailors.util.ThreadUtil;
 
 /**
  * This demo should cycle through the background colors. I only have the monochrome one,

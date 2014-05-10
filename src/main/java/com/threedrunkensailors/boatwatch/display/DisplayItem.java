@@ -1,4 +1,4 @@
-package com.ThreeDrunkenSailors.boatwatch.display;
+package com.threedrunkensailors.boatwatch.display;
 
 import com.adafruit.lcd.LCD;
 

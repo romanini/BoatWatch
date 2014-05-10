@@ -35,7 +35,7 @@ package com.adafruit.lcd.demo;
 import java.io.IOException;
 import com.adafruit.lcd.LCD;
 import com.adafruit.lcd.LCD.Direction;
-import com.ThreeDrunkenSailors.util.ThreadUtil;
+import com.threedrunkensailors.util.ThreadUtil;
 /**
  * Scrolls the view area back and forth a few times. Check out the documentation
  * for the HD44780 for more info on how the tiny (DDRAM) buffer is handled.

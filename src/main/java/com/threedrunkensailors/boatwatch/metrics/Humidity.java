@@ -1,8 +1,8 @@
-package com.ThreeDrunkenSailors.boatwatch.metrics;
+package com.threedrunkensailors.boatwatch.metrics;
 
 import com.adafruit.lcd.LCD;
-import com.ThreeDrunkenSailors.boatwatch.sensors.A2302;
-import com.ThreeDrunkenSailors.boatwatch.sensors.SensorReadingException;
+import com.threedrunkensailors.boatwatch.sensors.A2302;
+import com.threedrunkensailors.boatwatch.sensors.SensorReadingException;
 
 import java.io.IOException;
 

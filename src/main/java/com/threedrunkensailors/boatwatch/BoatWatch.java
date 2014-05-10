@@ -1,9 +1,11 @@
+package com.threedrunkensailors.boatwatch;
+
 import java.io.IOException;
 import java.util.Arrays;
 
-import com.ThreeDrunkenSailors.boatwatch.display.Display;
-import com.ThreeDrunkenSailors.boatwatch.display.DisplayItem;
-import com.ThreeDrunkenSailors.boatwatch.metrics.*;
+import com.threedrunkensailors.boatwatch.display.Display;
+import com.threedrunkensailors.boatwatch.display.DisplayItem;
+import com.threedrunkensailors.boatwatch.metrics.*;
 
 public class BoatWatch {
 	private final static DisplayItem[] displayItems = {

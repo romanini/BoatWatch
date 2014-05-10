@@ -1,6 +1,6 @@
-package com.ThreeDrunkenSailors.boatwatch.metrics;
+package com.threedrunkensailors.boatwatch.metrics;
 
-import com.ThreeDrunkenSailors.boatwatch.display.DisplayItem;
+import com.threedrunkensailors.boatwatch.display.DisplayItem;
 
 abstract public class AMetric implements Runnable, DisplayItem {
 

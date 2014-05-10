@@ -1,4 +1,4 @@
-package com.ThreeDrunkenSailors.boatwatch.sensors;
+package com.threedrunkensailors.boatwatch.sensors;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

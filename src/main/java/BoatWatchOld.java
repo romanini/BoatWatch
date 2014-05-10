@@ -1,6 +1,6 @@
 //import com.google.gdata.client.spreadsheet.SpreadsheetService;
 //import com.google.gdata.data.spreadsheet.*;
-//import com.google.gdata.com.ThreeDrunkenSailors.util.ServiceException;
+//import com.google.gdata.com.threedrunkensailors.util.ServiceException;
 
 /*
 import java.io.BufferedReader;
@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.NetworkInterface;
 import java.net.URL;
-import java.com.ThreeDrunkenSailors.util.*;
+import java.com.threedrunkensailors.util.*;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;

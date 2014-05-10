@@ -4,9 +4,41 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.3DrunkenSailors.BoatWatch</groupId>
+    <groupId>com.threedrunkensailors.boatwatch</groupId>
     <artifactId>BoatWatch</artifactId>
     <version>2.0</version>
+
+    <repositories>
+        <repository>
+            <id>Google Maven Snapshot Repository </id>
+            <name>Google Snapshots </name>
+            <url> https://oss.sonatype.org/content/repositories/google-snapshots/  </url>
+        </repository>
+        <repository>
+            <id>spring-milestones </id>
+            <name>Spring Milestones </name>
+            <url>http://repo.spring.io/milestone </url>
+        </repository>
+        <repository>
+            <id> libs-snapshot</id>
+            <name>libs-snapshot</name>
+            <url> http://repo.spring.io/libs-snapshot </url>
+        </repository>
+        <repository>
+            <id>spring-milestone</id>
+            <url>http://repo.spring.io/libs-milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <!-- for guice 2.0-->
+            <id> jboss-thirdparty  </id>
+            <name>JBoss Thirdparty Uploads </name>
+            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
+        </repository>
+
+    </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,13 +48,11 @@
     </properties>
 
     <dependencies>
-        <!-- START SNIPPET: maven-dependency-snippet -->
         <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-core</artifactId>
             <version>0.0.5</version>
         </dependency>
-        <!-- END SNIPPET: maven-dependency-snippet -->
         <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-gpio-extension</artifactId>
@@ -35,5 +65,66 @@
         </dependency>
     </dependencies>
 
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                <archive>
+                    <manifest>
+                        <addClasspath>true</addClasspath>
+                        <mainClass>com.threedrunkensailors.boatwatch.BoatWatch</mainClass>
+                    </manifest>
+                    <manifestEntries>
+                        <Product-Name>BoatWatch</Product-Name>
+                        <Class-Path>.</Class-Path>
+                    </manifestEntries>
+                </archive>
+                <includes>
+                    <include>com/**</include>
+                </includes>
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.8</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>target</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+                <!-- zip up the contents of the dist folder into a release zip with PROJECT-DATE.zip format -->
+                <execution>
+                    <id>dist-zip</id>
+                    <configuration>
+                        <attach>false</attach>
+                        <appendAssemblyId>false</appendAssemblyId>
+                        <archiveBaseDirectory>target/</archiveBaseDirectory>
+                        <finalName>BoatWatch-${maven.build.timestamp}</finalName>
+                        <descriptor>${project.basedir}/src/main/assembly/zip_assembly.xml</descriptor>
+                    </configuration>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        </plugins>
+    </build>
 </project>
