@@ -20,6 +20,7 @@ public class Temperature extends AMetric {
     public void run() {
         while (true) {
             try {
+                System.out.println("Reading Temperature");
                 reading = A2302.getTemperature();
                 Thread.sleep(DEFAULT_INTERVAL);
             } catch (SensorReadingException e) {

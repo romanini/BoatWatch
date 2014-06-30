@@ -19,6 +19,7 @@ public class Humidity extends AMetric {
     public void run() {
         while (true) {
             try {
+                System.out.println("Reading Humidity");
                 reading = A2302.getHumidity();
                 Thread.sleep(DEFAULT_INTERVAL);
             } catch (SensorReadingException e) {

@@ -2,19 +2,30 @@ package com.threedrunkensailors.boatwatch.sensors;
 
 import com.pi4j.io.gpio.*;
 
+import java.util.Random;
+
 /**
  * Created by marco on 4/29/14.
  */
-public class MCP3008 extends Gpio {
+public class MCP3008 {
+    private static boolean DEBUG = true;
 
-    public static synchronized int read(int channel) throws SensorReadingException {
-        GpioPinDigitalOutput clockpin = getGpio().provisionDigitalOutputPin(
+    public static synchronized int read(int channel) throws SensorReadingException, InterruptedException {
+        if (DEBUG) {
+            System.out.println("MCP3008 Setting fake sensor");
+            Random random = new Random();
+            return random.nextInt(1024);
+        }
+        GpioSensor gpio = SensorFactory.getGpioSensorInstance();
+        GpioController gpioController = gpio.open();
+
+        GpioPinDigitalOutput clockpin = gpioController.provisionDigitalOutputPin(
                 RaspiPin.GPIO_01, "SPICLK", PinState.LOW);
-        GpioPinDigitalInput misopin = getGpio().provisionDigitalInputPin(
+        GpioPinDigitalInput misopin = gpioController.provisionDigitalInputPin(
                 RaspiPin.GPIO_04, "SPIMISO", PinPullResistance.PULL_DOWN);
-        GpioPinDigitalOutput mosipin = getGpio().provisionDigitalOutputPin(
+        GpioPinDigitalOutput mosipin = gpioController.provisionDigitalOutputPin(
                 RaspiPin.GPIO_05, "SPIMOSI", PinState.LOW);
-        GpioPinDigitalOutput cspin = getGpio().provisionDigitalOutputPin(
+        GpioPinDigitalOutput cspin = gpioController.provisionDigitalOutputPin(
                 RaspiPin.GPIO_06, "SPICS", PinState.LOW);
 
         if ((channel > 7) || (channel < 0))
@@ -54,6 +65,8 @@ public class MCP3008 extends Gpio {
         cspin.high();
 
         adcout >>= 1;
+
+        gpio.close();
 
         return adcout;
     }

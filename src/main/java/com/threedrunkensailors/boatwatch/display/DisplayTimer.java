@@ -9,7 +9,8 @@ import java.io.IOException;
  */
 public class DisplayTimer implements Runnable {
     private static int CHECK_INTERVAL = 100;
-    private static int DEFAULT_TIMER = 60 * 1000;
+    private static int DEFAULT_TIMER = 6 * 1000;
+    private Object lock = new Object();
     private Integer timer;
     private LCD lcd;
 
@@ -18,9 +19,11 @@ public class DisplayTimer implements Runnable {
     }
 
     public void run() {
+        System.out.println("Starting Display Timer Thread");
         try {
-            timer = DEFAULT_TIMER;
+            resetTimer();
             lcd.setDisplayEnabled(true);
+            lcd.clear();
             while (!timerExpired()) {
                 decrementTimer(CHECK_INTERVAL);
                 try {
@@ -29,12 +32,16 @@ public class DisplayTimer implements Runnable {
                 }
             }
             lcd.setDisplayEnabled(false);
+            lcd.clear();
+//            lcd.stop();
+            System.out.println("Stopping Display Timer Thread");
         } catch (IOException e)  {
         }
     }
 
     private boolean timerExpired() {
-        synchronized (timer) {
+        synchronized (lock) {
+            System.out.println("display timer is: " + timer);
             if (timer <= 0) {
                 return true;
             } else {
@@ -44,14 +51,14 @@ public class DisplayTimer implements Runnable {
     }
 
     private int decrementTimer(int dec) {
-        synchronized (timer) {
+        synchronized (lock) {
             timer -= dec;
             return timer;
         }
     }
 
     public void resetTimer() {
-        synchronized (timer) {
+        synchronized (lock) {
             timer = DEFAULT_TIMER;
         }
     }

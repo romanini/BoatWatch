@@ -14,73 +14,90 @@ import java.util.List;
  */
 public class Display implements ButtonListener, Runnable {
 
+    private static int DEFAULT_TIMER = 6 * 1000;
     private static int INTERVAL = 100;
 
+    private Integer timer;
+    private Object lock = new Object();
     private ArrayList<DisplayItem> items = new ArrayList<DisplayItem>();
     private DisplayTimer displayTimer;
     private Thread displayTimerThread;
     private int currentItem = 0;
     private int currentLevel = 0;
+    private boolean displayEnabled = false;
+
     private static LCD lcd;
 
-    public Display(List<DisplayItem> items) {
-        try {
-            lcd = new LCD();
-            if (items.size() > 0) {
-                this.items.addAll(items);
-            } else {
-                items.add(new DummyItem());
-            }
-            displayTimer = new DisplayTimer(lcd);
-            displayTimerThread = new Thread(displayTimer);
-            ButtonPressedObserver observer = new ButtonPressedObserver(lcd);
-            observer.addButtonListener(this);
+    public Display(List<DisplayItem> items) throws IOException {
+        lcd = new LCD();
+        displayTimer = new DisplayTimer(lcd);
+        displayTimerThread = new Thread(displayTimer);
 
-            resetDisplayTimer();
-            items.get(currentItem).display(lcd);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (items.size() > 0) {
+            this.items.addAll(items);
+        } else {
+            items.add(new DummyItem());
         }
     }
 
     @Override
     public void run() {
+        try {
+            ButtonPressedObserver observer = new ButtonPressedObserver(lcd);
+            observer.addButtonListener(this);
+
+            resetDisplayTimer();
+            items.get(currentItem).display(lcd);
+            while (true) {
+                processDisplayTimer(INTERVAL);
+                Thread.sleep(INTERVAL);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+        } finally {
+            try {
+                lcd.stop();
+            } catch (Exception e) {
+            }
+        }
 
     }
 
     @Override
     public void onButtonPressed(Button button) {
-        resetDisplayTimer();
+        System.out.println("Button pressed: " + button.toString());
         try {
-            if (currentLevel > 0 &&  items.get(currentItem) instanceof ButtonListener) {
-                ((ButtonListener)items.get(currentItem)).onButtonPressed(button);
-            } else {
-                currentLevel--;
-            }
-            if (currentLevel <= 0) {
-                currentLevel = 0;
-                switch (button) {
-                    case UP:
-                        currentItem = --currentItem % items.size();
-                        items.get(currentItem).display(lcd);
-                        break;
-                    case DOWN:
-                        currentItem = ++currentItem % items.size();
-                        items.get(currentItem).display(lcd);
-                        break;
-                    case RIGHT:
-                        if (items.get(currentItem) instanceof ButtonListener) {
-                            currentLevel++;
+            if (resetDisplayTimer()) {
+                if (currentLevel > 0 && items.get(currentItem) instanceof ButtonListener) {
+                    ((ButtonListener) items.get(currentItem)).onButtonPressed(button);
+                } else {
+                    currentLevel--;
+                }
+                if (currentLevel <= 0) {
+                    currentLevel = 0;
+                    switch (button) {
+                        case UP:
+                            currentItem = --currentItem % items.size();
                             items.get(currentItem).display(lcd);
-                        }
-                        break;
-                    case LEFT:
-                        break;
-                    case SELECT:
-                        break;
-                    default:
-                        break;
+                            break;
+                        case DOWN:
+                            currentItem = ++currentItem % items.size();
+                            items.get(currentItem).display(lcd);
+                            break;
+                        case RIGHT:
+                            if (items.get(currentItem) instanceof ButtonListener) {
+                                currentLevel++;
+                                items.get(currentItem).display(lcd);
+                            }
+                            break;
+                        case LEFT:
+                            break;
+                        case SELECT:
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         } catch (IOException e) {
@@ -94,11 +111,44 @@ public class Display implements ButtonListener, Runnable {
         System.exit(2);
     }
 
-    private void resetDisplayTimer() {
-        if (displayTimerThread.isAlive()) {
-            displayTimer.resetTimer();
+    private boolean processDisplayTimer(int dec) throws IOException {
+        synchronized (lock) {
+            if (timer <= 0) {
+                disableDisplay();
+                return true;
+            } else {
+                timer -= dec;
+                return false;
+            }
+        }
+    }
+
+    public boolean resetDisplayTimer() throws IOException {
+        synchronized (lock) {
+            timer = DEFAULT_TIMER;
+            return enableDisplay();
+        }
+    }
+
+    private boolean enableDisplay() throws IOException {
+        if (!displayEnabled) {
+            lcd.setDisplayEnabled(true);
+            lcd.setBacklight(LCD.Color.ON);
+            displayEnabled = true;
+            return false;
         } else {
-            displayTimerThread.start();
+            return true;
+        }
+    }
+
+    private boolean disableDisplay() throws IOException {
+        if (displayEnabled) {
+            lcd.setDisplayEnabled(false);
+            lcd.setBacklight(LCD.Color.OFF);
+            displayEnabled = false;
+            return true;
+        } else {
+            return false;
         }
     }
 }

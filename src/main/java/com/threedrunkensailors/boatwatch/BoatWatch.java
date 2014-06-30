@@ -27,10 +27,13 @@ public class BoatWatch {
         }
 
         Display display = new Display(Arrays.asList(displayItems));
+        Thread displayThread = new Thread((Runnable)display);
+        displayThread.start();
 
         for (t = 0; t < threads.length; t++) {
             threads[t].join();
         }
+        displayThread.join();
 	}
 
 }
