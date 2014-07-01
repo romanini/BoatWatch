@@ -19,7 +19,7 @@ public class Bilge extends AMetric {
         while (true) {
             try {
                 System.out.println("Reading Bilge");
-                this.setReading(MCP3008.read(0));
+                this.setReading(MCP3008.read(MCP3008.Channel.BILGE));
                 Thread.sleep(DEFAULT_INTERVAL);
             } catch (SensorReadingException e) {
                 setReadingException(true);

@@ -19,7 +19,7 @@ public class BlackWater extends AMetric {
         while (true) {
             try {
                 System.out.println("Reading BlackWater");
-                this.setReading(MCP3008.read(0));
+                this.setReading(MCP3008.read(MCP3008.Channel.BLACK_WATER));
                 Thread.sleep(DEFAULT_INTERVAL);
             } catch (SensorReadingException e) {
                 setReadingException(true);
