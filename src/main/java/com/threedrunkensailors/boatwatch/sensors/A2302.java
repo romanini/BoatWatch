@@ -1,5 +1,7 @@
 package com.threedrunkensailors.boatwatch.sensors;
 
+import com.pi4j.io.gpio.GpioController;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,11 +17,13 @@ public class A2302 {
 
     private static boolean DEBUG = true;
 
-    private static int READING_INTERVAL = 30 * 1000;
+    private static final int DEFAULT_PAUSE = 200;
+
+    private static final int READING_INTERVAL = 30 * 1000;
 
     private static class Readings {
-        public Float temperature;
-        public Float humidity;
+        public Double temperature;
+        public Double humidity;
         public Date lastReading;
     }
 
@@ -35,12 +39,19 @@ public class A2302 {
             if (DEBUG) {
                 System.out.println("A2302 Setting fake sensor");
                 Random random = new Random();
-                readings.temperature = random.nextFloat() * 100;
-                readings.humidity = random.nextFloat() * 100;
+                readings.temperature = random.nextDouble() * 100;
+                readings.humidity = random.nextDouble() * 100;
                 readings.lastReading = new Date();
             } else {
                 Process process = null;
+                GpioSensor gpioSensor = new GpioSensor();
                 try {
+                    GpioController gpio = gpioSensor.open();
+                    // turn on the relay module
+                    gpio.provisionDigitalOutputPin(GpioSensor.RELAY_MASTER).high();
+                    // turn on the temp sensor relay and wait for it to come on
+                    gpio.provisionDigitalOutputPin(GpioSensor.RELAY_TEMP).high();
+                    Thread.sleep(DEFAULT_PAUSE);
                     process = new ProcessBuilder("/home/sailor/AM2302").start();
                     InputStream is = process.getInputStream();
                     InputStreamReader isr = new InputStreamReader(is);
@@ -55,26 +66,33 @@ public class A2302 {
                         String[] tempParts = lines.get(0).split("=");
                         String[] humidityParts = lines.get(1).split("=");
 
-                        readings.temperature = Float.parseFloat(tempParts[1]);
-                        readings.humidity = Float.parseFloat(humidityParts[1]);
+                        readings.temperature = Double.parseDouble(tempParts[1]);
+                        readings.humidity = Double.parseDouble(humidityParts[1]);
                         readings.lastReading = new Date();
                     } else if (attempt < 10) {
                         Thread.sleep(500);
+                        gpioSensor.close();
                         readings = read(attempt++);
                     }
+                    // turn off the temp sensor relay
+                    gpio.provisionDigitalOutputPin(GpioSensor.RELAY_TEMP).low();
+                    // turn off the relay module
+                    gpio.provisionDigitalOutputPin(GpioSensor.RELAY_MASTER).low();
                 } catch (Exception e) {
                     throw new SensorReadingException();
+                } finally {
+                    gpioSensor.close();
                 }
             }
         }
         return readings;
     }
 
-    synchronized public static Float getTemperature() throws SensorReadingException {
+    synchronized public static Double getTemperature() throws SensorReadingException {
         return read().temperature;
     }
 
-    synchronized public static Float getHumidity() throws SensorReadingException {
+    synchronized public static Double getHumidity() throws SensorReadingException {
         return read().humidity;
     }
 

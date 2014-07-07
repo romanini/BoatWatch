@@ -1,30 +1,35 @@
 package com.threedrunkensailors.boatwatch.metrics;
 
 import com.adafruit.lcd.LCD;
-import com.threedrunkensailors.boatwatch.sensors.A2302;
+import com.pi4j.io.gpio.GpioController;
+import com.threedrunkensailors.boatwatch.sensors.GpioSensor;
 import com.threedrunkensailors.boatwatch.sensors.SensorReadingException;
 
 import java.io.IOException;
 
-public class Temperature extends AMetric {
+public class ShorePower extends AMetric {
 
-    private static final String NAME = "Temperature";
+    private static final String NAME = "Shore Power";
 
-    private Double reading;
+    private boolean reading = false;
 
-    public Temperature(int frequency) {
+    public ShorePower(int frequency) {
         super(frequency);
     }
 
     public void run() {
         while (true) {
+            GpioSensor gpioSensor = new GpioSensor();
             try {
-                System.out.println("Reading Temperature");
-                this.setReading(A2302.getTemperature());
+                System.out.println("Reading Bilge");
+                GpioController gpio = gpioSensor.open();
+                this.setReading(gpio.provisionDigitalInputPin(GpioSensor.SHORE_POWER).isHigh());
                 Thread.sleep(DEFAULT_FREQUENCY);
             } catch (SensorReadingException e) {
                 setReadingException(true);
             } catch (InterruptedException e) {
+            } finally {
+                gpioSensor.close();
             }
         }
     }
@@ -36,16 +41,16 @@ public class Temperature extends AMetric {
         if (isReadingException()) {
             value = "Error!";
         } else {
-            value =  String.format("%.1f *C", this.getReading());
+            value = (this.isReading() ? "On" : "Off");
         }
         lcd.setText(String.format("%s:\n%s", NAME,value));
     }
 
-    public Double getReading() {
+    public boolean isReading() {
         return reading;
     }
 
-    public void setReading(Double reading) {
+    public void setReading(boolean reading) {
         this.reading = reading;
     }
 }

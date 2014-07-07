@@ -8,11 +8,20 @@ import com.threedrunkensailors.boatwatch.display.DisplayItem;
 import com.threedrunkensailors.boatwatch.metrics.*;
 
 public class BoatWatch {
+    private final static int FREQUENCY_EVERY_60_SECONDS = 60 * 1000;
+    private final static int FREQUENCY_EVERY_10_SECONDS = 10 * 1000;
+    private final static int FREQUENCY_1HZ = 1000;
+    private final static int FREQUENCY_10HZ = 100;
+
 	private final static DisplayItem[] displayItems = {
-            new Bilge(),
-			new BlackWater(),
-            new Humidity(),
-            new Temperature() };
+            new Voltage(FREQUENCY_1HZ),
+            new ShorePower(FREQUENCY_EVERY_60_SECONDS),
+            new Shunt(FREQUENCY_10HZ,Shunt.SHUNT_1),
+            new Shunt(FREQUENCY_10HZ,Shunt.SHUNT_2),
+            new Bilge(FREQUENCY_EVERY_60_SECONDS),
+			new BlackWater(FREQUENCY_EVERY_60_SECONDS),
+            new Humidity(FREQUENCY_EVERY_60_SECONDS),
+            new Temperature(FREQUENCY_EVERY_60_SECONDS) };
 
     private static Thread[] threads = new Thread[displayItems.length];
 

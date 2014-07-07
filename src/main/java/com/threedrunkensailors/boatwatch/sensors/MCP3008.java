@@ -48,4 +48,7 @@ public class MCP3008 {
         return ((spiData [0] << 7) | (spiData [1] >> 1)) & 0x3FF ;
     }
 
+    public static double readVoltage(Channel channel) throws SensorReadingException {
+        return (5.0 / 1024) * read(channel);
+    }
 }

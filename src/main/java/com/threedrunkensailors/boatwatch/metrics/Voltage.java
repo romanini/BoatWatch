@@ -1,29 +1,29 @@
 package com.threedrunkensailors.boatwatch.metrics;
 
 import com.adafruit.lcd.LCD;
-import com.threedrunkensailors.boatwatch.sensors.A2302;
+import com.threedrunkensailors.boatwatch.sensors.MCP3008;
 import com.threedrunkensailors.boatwatch.sensors.SensorReadingException;
 
 import java.io.IOException;
 
-public class Temperature extends AMetric {
+public class Voltage extends AMetric {
 
-    private static final String NAME = "Temperature";
+    private static final String NAME = "Voltage";
 
-    private Double reading;
+    private double reading;
 
-    public Temperature(int frequency) {
+    public Voltage(int frequency) {
         super(frequency);
     }
 
     public void run() {
         while (true) {
             try {
-                System.out.println("Reading Temperature");
-                this.setReading(A2302.getTemperature());
+                System.out.println("Reading Voltage ");
+                this.setReading(MCP3008.readVoltage(MCP3008.Channel.VOLTAGE));
                 Thread.sleep(DEFAULT_FREQUENCY);
             } catch (SensorReadingException e) {
-                setReadingException(true);
+                this.setReadingException(true);
             } catch (InterruptedException e) {
             }
         }
@@ -36,16 +36,16 @@ public class Temperature extends AMetric {
         if (isReadingException()) {
             value = "Error!";
         } else {
-            value =  String.format("%.1f *C", this.getReading());
+            value = String.format("%d", this.getReading());
         }
         lcd.setText(String.format("%s:\n%s", NAME,value));
     }
 
-    public Double getReading() {
+    public double getReading() {
         return reading;
     }
 
-    public void setReading(Double reading) {
+    public void setReading(double reading) {
         this.reading = reading;
     }
 }

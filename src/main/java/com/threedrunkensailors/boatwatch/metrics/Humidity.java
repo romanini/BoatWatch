@@ -8,12 +8,12 @@ import java.io.IOException;
 
 public class Humidity extends AMetric {
 
-    private static String NAME = "Humidity";
-    private Float reading;
+    private static final String NAME = "Humidity";
 
-    public Humidity() {
-        this.setMax(100);
-        this.setMin(0);
+    private Double reading;
+
+    public Humidity(int frequency) {
+        super(frequency);
     }
 
     public void run() {
@@ -21,7 +21,7 @@ public class Humidity extends AMetric {
             try {
                 System.out.println("Reading Humidity");
                 reading = A2302.getHumidity();
-                Thread.sleep(DEFAULT_INTERVAL);
+                Thread.sleep(DEFAULT_FREQUENCY);
             } catch (SensorReadingException e) {
                 setReadingException(true);
             } catch (InterruptedException e) {
@@ -36,14 +36,16 @@ public class Humidity extends AMetric {
         if (isReadingException()) {
             value = "Error!";
         } else {
-            value =  String.format("%d %%", this.getPercent());
+            value =  String.format("%.2f %%", this.getReading());
         }
         lcd.setText(String.format("%s:\n%s", NAME,value));
     }
 
-    public int getPercent() {
-        float value = (reading < this.getMin() ? getMin() : (reading > getMax() ? getMax() : reading));
-        return (reading > 0 ? (int)((float)((float)(value-getMin())/(float)(getMax()-getMin())) * 100) : 0);
+    public Double getReading() {
+        return reading;
     }
 
+    public void setReading(Double reading) {
+        this.reading = reading;
+    }
 }
