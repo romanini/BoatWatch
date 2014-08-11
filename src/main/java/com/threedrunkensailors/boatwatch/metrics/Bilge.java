@@ -24,28 +24,35 @@ public class Bilge extends AMetric {
 
     public void run() {
         while (true) {
-            GpioSensor gpioSensor = new GpioSensor();
             try {
-                System.out.println("Reading Bilge");
-                GpioController gpio = gpioSensor.open();
-                // turn on the relay module
-                gpio.provisionDigitalOutputPin(GpioSensor.RELAY_MASTER).high();
-                // turn on the bilge relay and wait for it to come on
-                gpio.provisionDigitalOutputPin(GpioSensor.RELAY_BILGE).high();
-                Thread.sleep(DEFAULT_PAUSE);
-                // take a reading from the sensor
-                this.setReading(MCP3008.read(MCP3008.Channel.BILGE));
-                // turn off the bilge relay
-                gpio.provisionDigitalOutputPin(GpioSensor.RELAY_BILGE).low();
-                // turn off the relay module
-                gpio.provisionDigitalOutputPin(GpioSensor.RELAY_MASTER).low();
-                Thread.sleep(DEFAULT_FREQUENCY);
-            } catch (SensorReadingException e) {
-                setReadingException(true);
+                this.readSensor();
+                Thread.sleep(this.frequency);
             } catch (InterruptedException e) {
-            } finally {
-                gpioSensor.close();
             }
+        }
+    }
+
+    private void readSensor() {
+        GpioSensor gpioSensor = new GpioSensor();
+        try {
+            System.out.println("Reading Bilge");
+            GpioController gpio = gpioSensor.open();
+            // turn on the relay module
+            gpio.provisionDigitalOutputPin(GpioSensor.RELAY_MASTER).high();
+            // turn on the bilge relay and wait for it to come on
+            gpio.provisionDigitalOutputPin(GpioSensor.RELAY_BILGE).high();
+            Thread.sleep(DEFAULT_PAUSE);
+            // take a reading from the sensor
+            this.setReading(MCP3008.read(MCP3008.Channel.BILGE));
+            // turn off the bilge relay
+            gpio.provisionDigitalOutputPin(GpioSensor.RELAY_BILGE).low();
+            // turn off the relay module
+            gpio.provisionDigitalOutputPin(GpioSensor.RELAY_MASTER).low();
+        } catch (SensorReadingException e) {
+            setReadingException(true);
+        } catch (InterruptedException e) {
+        } finally {
+            gpioSensor.close();
         }
     }
 
@@ -59,6 +66,11 @@ public class Bilge extends AMetric {
             value = String.format("%d %%", this.getPercent());
         }
         lcd.setText(String.format("%s:\n%s", NAME,value));
+    }
+
+    @Override
+    public void select() {
+        this.readSensor();
     }
 
     public double getPercent() {

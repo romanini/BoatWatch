@@ -19,13 +19,18 @@ public class Voltage extends AMetric {
     public void run() {
         while (true) {
             try {
-                System.out.println("Reading Voltage ");
-                this.setReading(MCP3008.readVoltage(MCP3008.Channel.VOLTAGE));
-                Thread.sleep(DEFAULT_FREQUENCY);
-            } catch (SensorReadingException e) {
-                this.setReadingException(true);
+                this.readSensor();
+                Thread.sleep(this.frequency);
             } catch (InterruptedException e) {
             }
+        }
+    }
+
+    private void readSensor() {
+        try {
+            this.setReading(MCP3008.readVolts(MCP3008.Channel.VOLTAGE));
+        } catch (SensorReadingException e) {
+            this.setReadingException(true);
         }
     }
 
@@ -39,6 +44,11 @@ public class Voltage extends AMetric {
             value = String.format("%d", this.getReading());
         }
         lcd.setText(String.format("%s:\n%s", NAME,value));
+    }
+
+    @Override
+    public void select() {
+        this.readSensor();
     }
 
     public double getReading() {

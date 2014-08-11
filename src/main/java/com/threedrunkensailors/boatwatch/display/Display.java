@@ -89,6 +89,7 @@ public class Display implements ButtonListener, Runnable {
                         case LEFT:
                             break;
                         case SELECT:
+                            items.get(currentItem).select();
                             break;
                         default:
                             break;

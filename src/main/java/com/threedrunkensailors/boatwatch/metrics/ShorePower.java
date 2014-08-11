@@ -19,18 +19,24 @@ public class ShorePower extends AMetric {
 
     public void run() {
         while (true) {
-            GpioSensor gpioSensor = new GpioSensor();
             try {
-                System.out.println("Reading Bilge");
-                GpioController gpio = gpioSensor.open();
-                this.setReading(gpio.provisionDigitalInputPin(GpioSensor.SHORE_POWER).isHigh());
-                Thread.sleep(DEFAULT_FREQUENCY);
-            } catch (SensorReadingException e) {
-                setReadingException(true);
+                this.readSensor();
+                Thread.sleep(this.frequency);
             } catch (InterruptedException e) {
-            } finally {
-                gpioSensor.close();
             }
+        }
+    }
+
+    private void readSensor() {
+        GpioSensor gpioSensor = new GpioSensor();
+        try {
+            GpioController gpio = gpioSensor.open();
+            this.setReading(gpio.provisionDigitalInputPin(GpioSensor.SHORE_POWER).isHigh());
+        } catch (SensorReadingException e) {
+            setReadingException(true);
+        } catch (InterruptedException e) {
+        } finally {
+            gpioSensor.close();
         }
     }
 
@@ -44,6 +50,11 @@ public class ShorePower extends AMetric {
             value = (this.isReading() ? "On" : "Off");
         }
         lcd.setText(String.format("%s:\n%s", NAME,value));
+    }
+
+    @Override
+    public void select() {
+        this.readSensor();
     }
 
     public boolean isReading() {

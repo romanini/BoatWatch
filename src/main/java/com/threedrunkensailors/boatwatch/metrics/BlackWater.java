@@ -24,31 +24,38 @@ public class BlackWater extends AMetric {
 
     public void run() {
         while (true) {
-            GpioSensor gpioSensor = new GpioSensor();
             try {
-                System.out.println("Reading BlackWater");
-                GpioController gpio = gpioSensor.open();
-                // turn on the relay module
-                gpio.provisionDigitalOutputPin(GpioSensor.RELAY_MASTER).high();
-                // turn on the black-water relay and wait for it to come on
-                gpio.provisionDigitalOutputPin(GpioSensor.RELAY_BLACK_WATER).high();
-                Thread.sleep(DEFAULT_PAUSE);
-                // take a reading from the sensor
-                this.setReading(MCP3008.read(MCP3008.Channel.BILGE));
-                // turn off the black-water relay
-                gpio.provisionDigitalOutputPin(GpioSensor.RELAY_BLACK_WATER).low();
-                // turn off the relay module
-                gpio.provisionDigitalOutputPin(GpioSensor.RELAY_MASTER).low();
-                this.setReading(MCP3008.read(MCP3008.Channel.BLACK_WATER));
-                Thread.sleep(DEFAULT_FREQUENCY);
-            } catch (SensorReadingException e) {
-                setReadingException(true);
+                this.readSensor();
+                Thread.sleep(this.frequency);
             } catch (InterruptedException e) {
-            } finally {
-                gpioSensor.close();
             }
         }
     }
+
+    private void readSensor() {
+        GpioSensor gpioSensor = new GpioSensor();
+        try {
+            GpioController gpio = gpioSensor.open();
+            // turn on the relay module
+            gpio.provisionDigitalOutputPin(GpioSensor.RELAY_MASTER).high();
+            // turn on the black-water relay and wait for it to come on
+            gpio.provisionDigitalOutputPin(GpioSensor.RELAY_BLACK_WATER).high();
+            Thread.sleep(DEFAULT_PAUSE);
+            // take a reading from the sensor
+            this.setReading(MCP3008.read(MCP3008.Channel.BILGE));
+            // turn off the black-water relay
+            gpio.provisionDigitalOutputPin(GpioSensor.RELAY_BLACK_WATER).low();
+            // turn off the relay module
+            gpio.provisionDigitalOutputPin(GpioSensor.RELAY_MASTER).low();
+            this.setReading(MCP3008.read(MCP3008.Channel.BLACK_WATER));
+        } catch (SensorReadingException e) {
+            setReadingException(true);
+        } catch (InterruptedException e) {
+        } finally {
+            gpioSensor.close();
+        }
+    }
+
     @Override
     public void display(LCD lcd) throws IOException {
         lcd.clear();
@@ -59,6 +66,11 @@ public class BlackWater extends AMetric {
             value = String.format("(%d) %d %%",this.getReading(),this.getPercent());
         }
         lcd.setText(String.format("%s:\n%s", NAME,value));
+    }
+
+    @Override
+    public void select() {
+        this.readSensor();
     }
 
     public int getPercent() {

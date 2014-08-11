@@ -10,11 +10,17 @@ import java.util.concurrent.Semaphore;
 public class GpioSensor {
 
     public static final Pin RELAY_MASTER = RaspiPin.GPIO_00;
-    public static final Pin RELAY_BILGE = RaspiPin.GPIO_01;
+    public static final Pin RELAY_TEMP = RaspiPin.GPIO_01;
     public static final Pin RELAY_BLACK_WATER = RaspiPin.GPIO_02;
-    public static final Pin RELAY_TEMP = RaspiPin.GPIO_03;
+    public static final Pin RELAY_BILGE = RaspiPin.GPIO_03;
     public static final Pin RELAY_UNUSED = RaspiPin.GPIO_04;
     public static final Pin SHORE_POWER = RaspiPin.GPIO_05;
+    public static final Pin UNUSED = RaspiPin.GPIO_06;
+    public static final Pin DHT22 = RaspiPin.GPIO_07;
+    public static final Pin UNUSED_1 = RaspiPin.GPIO_08;
+    public static final Pin UNUSED_2= RaspiPin.GPIO_09;
+    public static final Pin UNUSED_3= RaspiPin.GPIO_10;
+    public static final Pin UNUSED_4= RaspiPin.GPIO_11;
 
     private static GpioController gpio;
     private final Semaphore semaphore;

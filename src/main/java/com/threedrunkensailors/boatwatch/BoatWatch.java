@@ -13,11 +13,13 @@ public class BoatWatch {
     private final static int FREQUENCY_1HZ = 1000;
     private final static int FREQUENCY_10HZ = 100;
 
+    private final static int BATTERY_AMP_HOURS = 650;
+
 	private final static DisplayItem[] displayItems = {
             new Voltage(FREQUENCY_1HZ),
             new ShorePower(FREQUENCY_EVERY_60_SECONDS),
-            new Shunt(FREQUENCY_10HZ,Shunt.SHUNT_1),
-            new Shunt(FREQUENCY_10HZ,Shunt.SHUNT_2),
+            new Battery(FREQUENCY_10HZ, Battery.BATTERY_1,BATTERY_AMP_HOURS),
+            new Battery(FREQUENCY_10HZ, Battery.BATTERY_2,BATTERY_AMP_HOURS),
             new Bilge(FREQUENCY_EVERY_60_SECONDS),
 			new BlackWater(FREQUENCY_EVERY_60_SECONDS),
             new Humidity(FREQUENCY_EVERY_60_SECONDS),

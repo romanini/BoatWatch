@@ -2,6 +2,7 @@ package com.threedrunkensailors.boatwatch.metrics;
 
 import com.adafruit.lcd.LCD;
 import com.threedrunkensailors.boatwatch.sensors.A2302;
+import com.threedrunkensailors.boatwatch.sensors.DHT22;
 import com.threedrunkensailors.boatwatch.sensors.SensorReadingException;
 
 import java.io.IOException;
@@ -19,13 +20,18 @@ public class Temperature extends AMetric {
     public void run() {
         while (true) {
             try {
-                System.out.println("Reading Temperature");
-                this.setReading(A2302.getTemperature());
-                Thread.sleep(DEFAULT_FREQUENCY);
-            } catch (SensorReadingException e) {
-                setReadingException(true);
+                this.readSensor();
+                Thread.sleep(this.frequency);
             } catch (InterruptedException e) {
             }
+        }
+    }
+
+    private void readSensor() {
+        try {
+            this.setReading(DHT22.getTemperature());
+        } catch (SensorReadingException e) {
+            setReadingException(true);
         }
     }
 
@@ -39,6 +45,11 @@ public class Temperature extends AMetric {
             value =  String.format("%.1f *C", this.getReading());
         }
         lcd.setText(String.format("%s:\n%s", NAME,value));
+    }
+
+    @Override
+    public void select() {
+        this.readSensor();
     }
 
     public Double getReading() {

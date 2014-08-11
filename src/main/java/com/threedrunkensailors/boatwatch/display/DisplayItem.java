@@ -6,4 +6,5 @@ import java.io.IOException;
 
 public interface DisplayItem {
     public void display(LCD lcd) throws IOException;
+    public void select();
 }
