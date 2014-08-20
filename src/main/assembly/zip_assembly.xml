@@ -11,7 +11,8 @@
         <fileSet>
             <directory>.</directory>
             <includes>
-                <include>**</include>
+                <include>*.jar</include>
+                <include>lib/*</include>
             </includes>
         </fileSet>
 

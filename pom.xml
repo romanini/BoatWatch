@@ -119,7 +119,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>target/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -144,11 +144,11 @@
                 </includes>
             </configuration>
         </plugin>
-            <!--
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-assembly-plugin</artifactId>
     <version>2.4</version>
+    <!--
     <configuration>
         <archive>
             <manifest>
@@ -159,13 +159,14 @@
             <descriptorRef>jar-with-dependencies</descriptorRef>
         </descriptorRefs>
     </configuration>
+    -->
     <executions>
         <execution>
             <id>make-assembly</id>
             <configuration>
                 <attach>false</attach>
                 <appendAssemblyId>false</appendAssemblyId>
-                <archiveBaseDirectory>target/</archiveBaseDirectory>
+                <archiveBaseDirectory>${project.build.directory}/</archiveBaseDirectory>
                 <finalName>BoatWatch-${maven.build.timestamp}</finalName>
                 <descriptor>${project.basedir}/src/main/assembly/zip_assembly.xml</descriptor>
             </configuration>
@@ -176,7 +177,6 @@
                 </execution>
             </executions>
         </plugin>
-            -->
         </plugins>
     </build>
 </project>
