@@ -19,7 +19,8 @@ public class Display implements ButtonListener, Runnable {
 
     private Integer timer;
     private Object lock = new Object();
-    private ArrayList<DisplayItem> items = new ArrayList<DisplayItem>();
+    //private ArrayList<DisplayItem> items = new ArrayList<DisplayItem>();
+    private List<DisplayItem> items = null;
     private int currentItem = 0;
     private int currentLevel = 0;
     private boolean displayEnabled = false;
@@ -28,11 +29,14 @@ public class Display implements ButtonListener, Runnable {
 
     public Display(List<DisplayItem> items) throws IOException {
         lcd = new LCD();
+        this.items = items;
+        /*
         if (items.size() > 0) {
             this.items.addAll(items);
         } else {
             items.add(new DummyItem());
         }
+        */
     }
 
     @Override

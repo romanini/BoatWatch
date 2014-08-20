@@ -6,10 +6,13 @@ import com.threedrunkensailors.boatwatch.sensors.DHT22;
 import com.threedrunkensailors.boatwatch.sensors.SensorReadingException;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Temperature extends AMetric {
 
     private static final String NAME = "Temperature";
+
+    private static final String TEMPERATURE = "Temperature";
 
     private Double reading;
 
@@ -59,4 +62,11 @@ public class Temperature extends AMetric {
     public void setReading(Double reading) {
         this.reading = reading;
     }
+
+    @Override
+    public HashMap<String, String> getData() {
+        HashMap<String,String> values = super.getData();
+        values.put(TEMPERATURE,String.format("%.1f", (isReadingException()? "Error" : String.format("%d", this.getReading()))));
+        return values;
+   }
 }

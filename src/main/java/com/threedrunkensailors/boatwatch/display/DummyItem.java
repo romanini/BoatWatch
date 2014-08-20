@@ -13,4 +13,9 @@ public class DummyItem implements DisplayItem {
         lcd.clear();
         lcd.setText("No sensors to\ndisplay!");
     }
+
+    @Override
+    public void select() {
+
+    }
 }

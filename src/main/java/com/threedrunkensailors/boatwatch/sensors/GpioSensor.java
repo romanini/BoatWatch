@@ -17,10 +17,10 @@ public class GpioSensor {
     public static final Pin SHORE_POWER = RaspiPin.GPIO_05;
     public static final Pin UNUSED = RaspiPin.GPIO_06;
     public static final Pin DHT22 = RaspiPin.GPIO_07;
-    public static final Pin UNUSED_1 = RaspiPin.GPIO_08;
-    public static final Pin UNUSED_2= RaspiPin.GPIO_09;
-    public static final Pin UNUSED_3= RaspiPin.GPIO_10;
-    public static final Pin UNUSED_4= RaspiPin.GPIO_11;
+    public static final Pin CELL_KEY = RaspiPin.GPIO_17;
+    public static final Pin CELL_PS = RaspiPin.GPIO_18;
+    public static final Pin UNUSED_3= RaspiPin.GPIO_19;
+    public static final Pin UNUSED_4= RaspiPin.GPIO_20;
 
     private static GpioController gpio;
     private final Semaphore semaphore;

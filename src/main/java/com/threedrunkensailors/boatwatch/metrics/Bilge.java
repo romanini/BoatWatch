@@ -7,10 +7,13 @@ import com.threedrunkensailors.boatwatch.sensors.MCP3008;
 import com.threedrunkensailors.boatwatch.sensors.SensorReadingException;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Bilge extends AMetric {
 
     private static final String NAME = "Bilge";
+
+    private static final String BILGE_PERCENT = "BilgePercent";
 
     private int reading;
     private int min;
@@ -71,6 +74,13 @@ public class Bilge extends AMetric {
     @Override
     public void select() {
         this.readSensor();
+    }
+
+    @Override
+    public HashMap<String,String> getData() {
+        HashMap<String,String> values = super.getData();
+        values.put(BILGE_PERCENT,String.format("%d", (isReadingException()? "Error" : String.format("%d", this.getPercent()))));
+        return values;
     }
 
     public double getPercent() {

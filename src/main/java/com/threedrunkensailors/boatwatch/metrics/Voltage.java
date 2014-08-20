@@ -5,10 +5,13 @@ import com.threedrunkensailors.boatwatch.sensors.MCP3008;
 import com.threedrunkensailors.boatwatch.sensors.SensorReadingException;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Voltage extends AMetric {
 
     private static final String NAME = "Voltage";
+
+    private static final String VOLTAGE = "Voltage";
 
     private double reading;
 
@@ -57,5 +60,12 @@ public class Voltage extends AMetric {
 
     public void setReading(double reading) {
         this.reading = reading;
+    }
+
+    @Override
+    public HashMap<String, String> getData() {
+        HashMap<String,String> values = super.getData();
+        values.put(VOLTAGE,String.format("%d", (isReadingException()? "Error" : String.format("%d", this.getReading()))));
+        return values;
     }
 }

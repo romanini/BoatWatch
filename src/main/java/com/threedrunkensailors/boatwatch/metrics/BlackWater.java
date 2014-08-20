@@ -7,10 +7,13 @@ import com.threedrunkensailors.boatwatch.sensors.MCP3008;
 import com.threedrunkensailors.boatwatch.sensors.SensorReadingException;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class BlackWater extends AMetric {
 
     private static final String NAME = "Black Water";
+
+    private static final String BLACK_WATER_PERCENT = "BlackWaterPercent";
 
     private int reading;
     private int min;
@@ -100,5 +103,12 @@ public class BlackWater extends AMetric {
 
     public void setMax(int max) {
         this.max = max;
+    }
+
+    @Override
+    public HashMap<String, String> getData() {
+        HashMap<String,String> values = super.getData();
+        values.put(BLACK_WATER_PERCENT,String.format("%d", (isReadingException()? "Error" : String.format("%d", this.getPercent()))));
+        return values;
     }
 }

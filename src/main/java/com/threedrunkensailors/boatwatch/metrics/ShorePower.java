@@ -6,10 +6,13 @@ import com.threedrunkensailors.boatwatch.sensors.GpioSensor;
 import com.threedrunkensailors.boatwatch.sensors.SensorReadingException;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class ShorePower extends AMetric {
 
     private static final String NAME = "Shore Power";
+
+    private static final String SHORE_POWER = "ShorePower";
 
     private boolean reading = false;
 
@@ -63,5 +66,12 @@ public class ShorePower extends AMetric {
 
     public void setReading(boolean reading) {
         this.reading = reading;
+    }
+
+    @Override
+    public HashMap<String, String> getData() {
+        HashMap<String,String> values = super.getData();
+        values.put(SHORE_POWER,(isReadingException()? "Error" : (isReading() ? "true" : "false")));
+        return values;
     }
 }
