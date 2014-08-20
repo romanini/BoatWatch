@@ -131,8 +131,9 @@
                 <configuration>
                 <archive>
                     <manifest>
-                        <addClasspath>true</addClasspath>
                         <mainClass>com.threedrunkensailors.boatwatch.BoatWatch</mainClass>
+                        <addClasspath>true</addClasspath>
+                        <classpathPrefix>./lib/</classpathPrefix>
                     </manifest>
                     <manifestEntries>
                         <Product-Name>BoatWatch</Product-Name>
